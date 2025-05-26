@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+
 
 class AuthController extends Controller
 {
@@ -46,6 +45,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'level' => 1,
+            'xp' => 0
         ]);
 
         $token = $user->createToken('register_token')->plainTextToken;
@@ -61,39 +62,5 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-    }
-
-    public function getProfile(Request $request)
-    {
-        return response()->json($request->user());
-    }
-
-    public function updateProfile(Request $request)
-    {
-        $user = $request->user();
-
-        $data = $request->validate([
-            'name' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024|min:10',
-        ]);
-
-        if ($request->hasFile('photo')) {
-            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-                Storage::disk('public')->delete($user->photo);
-            }
-
-            $file = $request->file('photo');
-            $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('profile/image', $filename, 'public');
-
-            $data['photo'] = $path;
-        }
-
-        $user->update($data);
-
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'user' => $user
-        ]);
     }
 }

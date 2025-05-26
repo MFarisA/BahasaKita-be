@@ -2,28 +2,33 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ExerciseResource\Pages;
-use App\Filament\Resources\ExerciseResource\RelationManagers;
-use App\Models\Exercise;
+use App\Filament\Resources\LanguageResource\Pages;
+use App\Filament\Resources\LanguageResource\RelationManagers;
+use App\Models\Language;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ExerciseResource extends Resource
+class LanguageResource extends Resource
 {
-    protected static ?string $model = Exercise::class;
+    protected static ?string $model = Language::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $navigationIcon = 'heroicon-o-language';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
+                    ->label('Local Language'),
             ]);
     }
 
@@ -31,7 +36,11 @@ class ExerciseResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label('Local Language')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
                 //
@@ -56,9 +65,9 @@ class ExerciseResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExercises::route('/'),
-            'create' => Pages\CreateExercise::route('/create'),
-            'edit' => Pages\EditExercise::route('/{record}/edit'),
+            'index' => Pages\ListLanguages::route('/'),
+            'create' => Pages\CreateLanguage::route('/create'),
+            'edit' => Pages\EditLanguage::route('/{record}/edit'),
         ];
     }
 }

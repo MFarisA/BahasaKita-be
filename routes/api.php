@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ExerciseSubmissionController;
+use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\GeminiController as ApiGeminiController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,29 +19,24 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('/', [LanguageController::class, 'index']);              // GET /languages
+Route::get('/{id}', [LanguageController::class, 'show']);           // GET /languages/{id}
 
 // Protected routes tanpa rate limiting throttle:api
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/profile', [AuthController::class, 'getProfile']);
-    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::get('/profile', [UserController::class, 'getProfile']);
+    Route::put('/profile', [UserController::class, 'updateProfile']);
 
-    // Bahasa & Kursus
-    Route::get('/', [LanguageController::class, 'index']);              // GET /languages
-    Route::post('/', [LanguageController::class, 'store']);             // POST /languages
-    Route::get('/{id}', [LanguageController::class, 'show']);           // GET /languages/{id}
-    Route::put('/{id}', [LanguageController::class, 'update']);         // PUT /languages/{id}
-    Route::delete('/{id}', [LanguageController::class, 'destroy']);     // DELETE /languages/{id}
+    Route::get('/{id}/courses', [ExerciseController::class, 'courses']);           // GET /languages/{id}/courses
+    Route::get('/courses/{id}/units', [ExerciseController::class, 'courseUnits']); // GET /courses/{id}/units
+    Route::get('/units/{id}/lessons', [ExerciseController::class, 'unitLessons']); // GET /units/{id}/lessons
+    Route::get('/lessons/{id}/exercises', [ExerciseController::class, 'lessonExercises']); // GET /lessons/{id}/exercises
 
-    Route::get('/{id}/courses', [LanguageController::class, 'courses']);           // GET /languages/{id}/courses
-    Route::get('/courses/{id}/units', [LanguageController::class, 'courseUnits']); // GET /courses/{id}/units
-    Route::get('/units/{id}/lessons', [LanguageController::class, 'unitLessons']); // GET /units/{id}/lessons
-    Route::get('/lessons/{id}/exercises', [LanguageController::class, 'lessonExercises']); // GET /lessons/{id}/exercises
-
-    Route::post('/exercises/{id}/submit', [ExerciseSubmissionController::class, 'submit']);
-    Route::get('/my-submissions', [ExerciseSubmissionController::class, 'userSubmissions']);
-    Route::get('/my-submissions/{id}', [ExerciseSubmissionController::class, 'show']);
+    Route::post('/exercises/{id}/submit', [ExerciseController::class, 'submit']);
+    Route::get('/my-submissions', [ExerciseController::class, 'userSubmissions']);
+    Route::get('/my-submissions/{id}', [ExerciseController::class, 'show']);
 
     Route::prefix('gemini')->name('gemini.')->group(function () {
         Route::post('/generate', [ApiGeminiController::class, 'generateText'])->name('generate');
@@ -50,6 +46,3 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
         // Route::post('/analyze-image', [ApiGeminiController::class, 'analyzeImage'])->name('analyze-image');
     });
 });
-
-
-
