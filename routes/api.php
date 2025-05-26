@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\GeminiController as ApiGeminiController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Http\Request;
@@ -37,6 +38,18 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::post('/exercises/{id}/submit', [ExerciseController::class, 'submit']);
     Route::get('/my-submissions', [ExerciseController::class, 'userSubmissions']);
     Route::get('/my-submissions/{id}', [ExerciseController::class, 'show']);
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    // Trigger-only endpoints (bisa dijadwalkan lewat scheduler)
+    Route::post('/notifications/reminders', [NotificationController::class, 'sendStudyReminders']);
+    Route::post('/notifications/new-lesson/{lesson}', [NotificationController::class, 'notifyNewLesson']);
+    Route::post('/notifications/milestones', function () {
+        foreach (\App\Models\User::all() as $user) {
+            app(NotificationController::class)->checkMilestones($user);
+        }
+    });
 
     Route::prefix('gemini')->name('gemini.')->group(function () {
         Route::post('/generate', [ApiGeminiController::class, 'generateText'])->name('generate');
