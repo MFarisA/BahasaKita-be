@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\GeminiController as ApiGeminiController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\LeaderBoardGameController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -50,6 +51,10 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
             app(NotificationController::class)->checkMilestones($user);
         }
     });
+
+    Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
+    Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
+    Route::get('/leaderboard/me', [LeaderBoardGameController::class, 'myProgress']);
 
     Route::prefix('gemini')->name('gemini.')->group(function () {
         Route::post('/generate', [ApiGeminiController::class, 'generateText'])->name('generate');
