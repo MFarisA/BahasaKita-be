@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseSubmissionController;
 use App\Http\Controllers\Api\GeminiController as ApiGeminiController;
 use App\Http\Controllers\Api\LanguageController;
-use App\Http\Controllers\GeminiController;
+use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +16,8 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->get('/us
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // Protected routes tanpa rate limiting throttle:api
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(function () {
@@ -48,3 +50,6 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
         // Route::post('/analyze-image', [ApiGeminiController::class, 'analyzeImage'])->name('analyze-image');
     });
 });
+
+
+
