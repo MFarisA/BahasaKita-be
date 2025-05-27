@@ -28,7 +28,8 @@ class LanguageResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->label('Local Language'),
+                    ->label('Bahasa Lokal'),
+                
             ]);
     }
 
@@ -37,7 +38,7 @@ class LanguageResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Local Language')
+                    ->label('Bahasa Lokal')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
