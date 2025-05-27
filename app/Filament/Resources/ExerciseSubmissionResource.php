@@ -6,9 +6,14 @@ use App\Filament\Resources\ExerciseSubmissionResource\Pages;
 use App\Filament\Resources\ExerciseSubmissionResource\RelationManagers;
 use App\Models\ExerciseSubmission;
 use Filament\Forms;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,13 +22,31 @@ class ExerciseSubmissionResource extends Resource
 {
     protected static ?string $model = ExerciseSubmission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Select::make('user_id')
+                    ->label('User')
+                    ->relationship('user', 'name')
+                    ->required(),
+
+                Select::make('exercise_id')
+                    ->label('Latihan')
+                    ->relationship('exercise', 'id')
+                    ->required(),
+
+                KeyValue::make('submitted_answer')
+                    ->label('Jawaban yang Diserahkan')
+                    ->keyLabel('Kunci')
+                    ->valueLabel('Nilai')
+                    ->required(),
+
+                Toggle::make('is_correct')
+                    ->label('Jawaban Benar?')
+                    ->required(),
             ]);
     }
 
@@ -31,7 +54,23 @@ class ExerciseSubmissionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('user.name')
+                    ->label('Nama Pengguna')
+                    ->searchable(),
+
+                TextColumn::make('exercise.id')
+                    ->label('Latihan'),
+
+                IconColumn::make('is_featured')
+                    ->boolean()
+                    ->label('Jawaban Benar')
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-x-mark'),
+
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //
