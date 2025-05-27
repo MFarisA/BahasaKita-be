@@ -21,28 +21,39 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LeaderBoardResource extends Resource
 {
     protected static ?string $model = LessonProgress::class;
+    protected static ?string $title = 'Leader Board';
+    protected static ?string $label = 'Leader Board';
+    protected static ?string $pluralLabel = 'Leader Boards';
 
-    protected static ?string $navigationIcon = 'heroicon-s-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    public static function getModelLabel(): string
+    {
+        return static::$label;
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::$pluralLabel;
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('user.name')
-                    ->label('User Name')
+                    ->label('Nama user')
                     ->required()
                     ->disabled(),
                 TextInput::make('lesson.title'),
-                TextInput::make('score')
+                TextInput::make('Skor')
                     ->label('Score')
                     ->numeric()
                     ->required(),
                 textInput::make('is_completed')
-                    ->label('Completed'),
+                    ->label('Selesai'),
                 DateTimePicker::make('created_at')
                     ->label('Progress Date')
                     ->disabled(),
-
                 DateTimePicker::make('updated_at')
                     ->label('Last Updated')
                     ->disabled(),
