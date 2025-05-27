@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,10 +27,24 @@ class LessonResource extends Resource
         return $form
             ->schema([
                 Select::make('unit_id')
-                ->label('Level')
-                ->relationship('unit', 'title')
-                ->required(),
-                
+                    ->label('Level')
+                    ->relationship('unit', 'title')
+                    ->required(),
+
+                TextInput::make('title')
+                    ->label('Judul pelajaran')
+                    ->required()
+                    ->maxLength(50),
+
+                TextInput::make('content')
+                    ->label('Konten pelajaran')
+                    ->required()
+                    ->maxLength(5000),
+
+                TextInput::make('order')
+                    ->label('Urutan')
+                    ->numeric()
+                    ->default(0),
             ]);
     }
 
@@ -37,7 +52,26 @@ class LessonResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('unit.title')
+                    ->label('Level')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('title')
+                    ->label('Judul Pelajaran')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('content')
+                    ->label('Konten Pelajaran')
+                    ->limit(50)
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('order')
+                    ->label('Urutan')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

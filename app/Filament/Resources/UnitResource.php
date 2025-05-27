@@ -6,12 +6,16 @@ use App\Filament\Resources\UnitResource\Pages;
 use App\Filament\Resources\UnitResource\RelationManagers;
 use App\Models\Unit;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+use function Laravel\Prompts\select;
 
 class UnitResource extends Resource
 {
@@ -23,7 +27,20 @@ class UnitResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('course_id')
+                ->relationship('course', 'title')
+                ->label('Course')
+                ->required(),
+
+                TextInput::make('title')
+                ->required()
+                ->maxLength(50)
+                ->label('Unit Title'),
+
+                TextInput::make('order')
+                ->label('order')
+                ->numeric()
+                ->required()
             ]);
     }
 
@@ -31,7 +48,19 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('course.title')
+                    ->label('Course Title')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Unit Title')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('order')
+                    ->label('Order')
+                    ->sortable(),
             ])
             ->filters([
                 //
