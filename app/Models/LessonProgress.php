@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class LessonProgress extends Model
 {
-    protected $fillable = ['user_id', 'lesson_id', 'is_completed'];
+    protected $fillable = ['user_id', 'lesson_id', 'is_completed', 'score'];
 
     protected $casts = [
-        'completed' => 'boolean',
+        'is_completed' => 'boolean',
     ];
 
     public function user()

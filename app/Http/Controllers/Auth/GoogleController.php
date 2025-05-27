@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -32,6 +33,12 @@ class GoogleController extends Controller
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
                     'password' => encrypt('randomencryptedpassword')
+                ]);
+
+                Profile::create([
+                    'user_id' => $user->id,
+                    'level' => 1,
+                    'xp' => 0,
                 ]);
             }
             

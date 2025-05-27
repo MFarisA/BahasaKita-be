@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LessonLog extends Model
 {
+    // notification
     protected $fillable = ['user_id', 'lesson_id', 'duration', 'logged_at'];
 
     protected $casts = [

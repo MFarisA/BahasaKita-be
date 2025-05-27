@@ -12,15 +12,17 @@ use DB;
 class LeaderBoardGameController extends Controller
 {
     // Global leaderboard: total score dari semua waktu
-    public function globalLeaderboard()
+    public function globalLeaderboard(Request $request)
     {
+        $perPage = 20;
+        $page = $request->input('page', 1);
+
         $users = User::select('users.id', 'users.name')
             ->join('lesson_progresses', 'users.id', '=', 'lesson_progresses.user_id')
             ->selectRaw('users.id, users.name, SUM(lesson_progresses.score) as total_score')
             ->groupBy('users.id', 'users.name')
             ->orderByDesc('total_score')
-            ->limit(100)
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'status' => 'success',
@@ -30,8 +32,10 @@ class LeaderBoardGameController extends Controller
     }
 
     // Weekly leaderboard: hanya progress dalam 7 hari terakhir
-    public function weeklyLeaderboard()
+    public function weeklyLeaderboard(Request $request)
     {
+        $perPage = 20;
+        $page = $request->input('page', 1);
         $startOfWeek = Carbon::now()->subDays(7);
 
         $users = User::select('users.id', 'users.name')
@@ -40,8 +44,7 @@ class LeaderBoardGameController extends Controller
             ->selectRaw('users.id, users.name, SUM(lesson_progresses.score) as total_score')
             ->groupBy('users.id', 'users.name')
             ->orderByDesc('total_score')
-            ->limit(100)
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'status' => 'success',
