@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
 {
-    protected $fillable = ['lesson_id', 'type', 'content', 'answer'];
+    protected $fillable = ['lesson_id', 'type', 'gambar', 'content', 'answer'];
 
     protected $casts = [
         'content' => 'array',
