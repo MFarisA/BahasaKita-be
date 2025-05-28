@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExerciseResource\Pages;
 use App\Filament\Resources\ExerciseResource\RelationManagers;
+use App\Filament\Resources\ExerciseResource\RelationManagers\SubmissionsRelationManager;
 use App\Models\Exercise;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -119,7 +120,7 @@ class ExerciseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SubmissionsRelationManager::class,
         ];
     }
 

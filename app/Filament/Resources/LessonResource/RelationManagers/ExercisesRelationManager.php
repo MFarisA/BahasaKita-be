@@ -92,10 +92,11 @@ class ExercisesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('manageExercises')
-                    ->label('Kelola Latihan')
-                    ->url(fn($record) => $record ? route('filament.admin.resources.lessons.edit', ['record' => $record->id]) : '#')
-                    ->icon('heroicon-o-book-open'),
+                Tables\Actions\Action::make('kelolaSubmissions')
+                    ->label('Submissions')
+                    ->url(fn($record) => route('filament.admin.resources.exercises.edit', ['record' => $record->id]))
+                    ->icon('heroicon-o-document-text'),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

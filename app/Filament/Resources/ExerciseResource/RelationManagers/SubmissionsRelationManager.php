@@ -1,41 +1,30 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ExerciseResource\RelationManagers;
 
-use App\Filament\Resources\ExerciseSubmissionResource\Pages;
-use App\Filament\Resources\ExerciseSubmissionResource\RelationManagers;
-use App\Models\ExerciseSubmission;
 use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\IconColumn;
 
-class ExerciseSubmissionResource extends Resource
+class SubmissionsRelationManager extends RelationManager
 {
-    protected static ?string $model = ExerciseSubmission::class;
+    protected static string $relationship = 'submissions';
+    protected static ?string $recordTitleAttribute = 'user.name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('user_id')
                     ->label('User')
                     ->relationship('user', 'name')
-                    ->required(),
-
-                Select::make('exercise_id')
-                    ->label('Latihan')
-                    ->relationship('exercise', 'id')
                     ->required(),
 
                 KeyValue::make('submitted_answer')
@@ -50,16 +39,13 @@ class ExerciseSubmissionResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Nama Pengguna')
                     ->searchable(),
-
-                TextColumn::make('exercise.id')
-                    ->label('Latihan'),
 
                 IconColumn::make('is_correct')
                     ->boolean()
@@ -68,36 +54,24 @@ class ExerciseSubmissionResource extends Resource
                     ->falseIcon('heroicon-o-x-mark'),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label('Dikirim')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListExerciseSubmissions::route('/'),
-            'create' => Pages\CreateExerciseSubmission::route('/create'),
-            'edit' => Pages\EditExerciseSubmission::route('/{record}/edit'),
-        ];
     }
 }
