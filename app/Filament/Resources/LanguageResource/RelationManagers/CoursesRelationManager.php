@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\LanguageResource\RelationManagers;
 
+// use Filament\Actions\Action; // Remove this import
+use Filament\Tables\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -42,6 +44,10 @@ class CoursesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Action::make('manageUnits')
+                    ->label('Kelola Unit')
+                    ->url(fn($record) => route('filament.admin.resources.courses.edit', $record)) // arahkan ke halaman edit course
+                    ->icon('heroicon-o-rectangle-stack'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
