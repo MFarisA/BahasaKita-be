@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LessonResource\Pages;
 use App\Filament\Resources\LessonResource\RelationManagers;
+use App\Filament\Resources\LessonResource\RelationManagers\ExercisesRelationManager;
 use App\Models\Lesson;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -89,7 +90,7 @@ class LessonResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ExercisesRelationManager::class,
         ];
     }
 
