@@ -3,12 +3,18 @@
 namespace App\Filament\Resources\LessonResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ExercisesRelationManager extends RelationManager
 {
@@ -18,9 +24,33 @@ class ExercisesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('type')
+                TextInput::make('type')
                     ->required()
                     ->maxLength(255),
+
+                FileUpload::make('gambar')
+                    ->label('Soal gambar')
+                    ->image()
+                    ->dehydrated()
+                    ->imageEditor()
+                    ->imageCropAspectRatio('1:1')
+                    ->maxSize(2048)
+                    ->disk('public')
+                    ->directory('exercise-photos')
+                    ->visibility('public')
+                    ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
+
+                KeyValue::make('content')
+                    ->label('Konten Soal')
+                    ->keyLabel('Kunci')
+                    ->valueLabel('Isi')
+                    ->required(),
+
+                KeyValue::make('answer')
+                    ->label('Jawaban Benar')
+                    ->keyLabel('Kunci Jawaban')
+                    ->valueLabel('Isi Jawaban')
+                    ->required(),
             ]);
     }
 
@@ -29,7 +59,31 @@ class ExercisesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('type')
             ->columns([
-                Tables\Columns\TextColumn::make('type'),
+                TextColumn::make('type')
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'multiple_choice' => 'success',
+                        default => 'gray',
+                    }),
+
+                ImageColumn::make('gambar')
+                    ->label('Gambar')
+                    ->size(50),
+
+                TextColumn::make('content')
+                    ->label('Konten')
+                    ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
+                    ->tooltip(fn($state) => json_encode($state))
+                    ->wrap(),
+
+                TextColumn::make('answer')
+                    ->label('Jawaban')
+                    ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
+                    ->tooltip(fn($state) => json_encode($state))
+                    ->wrap(),
+
+
             ])
             ->filters([
                 //
@@ -38,6 +92,10 @@ class ExercisesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('manageExercises')
+                    ->label('Kelola Latihan')
+                    ->url(fn($record) => $record ? route('filament.admin.resources.lessons.edit', ['record' => $record->id]) : '#')
+                    ->icon('heroicon-o-book-open'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

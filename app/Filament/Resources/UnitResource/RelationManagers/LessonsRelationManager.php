@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UnitResource\RelationManagers;
 
 use Dom\Text;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -60,6 +61,10 @@ class LessonsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('manageLessons')
+                    ->label('Kelola latihan')
+                    ->url(fn($record) => $record ? route('filament.admin.resources.lessons.edit', ['record' => $record->id]) : '#')
+                    ->icon('heroicon-o-book-open'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
