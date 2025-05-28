@@ -28,7 +28,7 @@ class CourseResource extends Resource
             ->schema([
                 TextInput::make('title')
                     ->required()
-                    ->label('Course Title')
+                    ->label('Judul kursus')
                     ->maxLength(50),
                 Select::make('language_id')
                     ->label('Language')

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LanguageResource\Pages;
 use App\Filament\Resources\LanguageResource\RelationManagers;
+use App\Filament\Resources\LanguageResource\RelationManagers\CoursesRelationManager;
 use App\Models\Language;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -59,7 +60,7 @@ class LanguageResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CoursesRelationManager::class,
         ];
     }
 
