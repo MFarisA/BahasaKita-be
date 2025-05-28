@@ -42,10 +42,10 @@ class ExerciseResource extends Resource
                         'multiple_choice' => 'Multiple Choice',
                     ])
                     ->required()
-                    ->label('Type'),
+                    ->label('Jenis Soal'),
 
                 FileUpload::make('gambar')
-                    ->label('Soal gambar')
+                    ->label('Gambar Soal')
                     ->image()
                     ->dehydrated()
                     ->imageEditor()
@@ -57,7 +57,7 @@ class ExerciseResource extends Resource
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
 
                 KeyValue::make('content')
-                    ->label('Konten Soal')
+                    ->label('Isi Soal')
                     ->keyLabel('Kunci')
                     ->valueLabel('Isi')
                     ->required(),
@@ -75,12 +75,12 @@ class ExerciseResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('lesson.title')
-                    ->label('Pelajaran')
+                    ->label('Judul Pelajaran')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('type')
-                    ->label('Tipe')
+                    ->label('Tipe soal')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'multiple_choice' => 'success',
@@ -92,13 +92,13 @@ class ExerciseResource extends Resource
                     ->size(50),
 
                 TextColumn::make('content')
-                    ->label('Konten')
+                    ->label('Isi Soal')
                     ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
                     ->tooltip(fn($state) => json_encode($state))
                     ->wrap(),
 
                 TextColumn::make('answer')
-                    ->label('Jawaban')
+                    ->label('Jawaban benar')
                     ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
                     ->tooltip(fn($state) => json_encode($state))
                     ->wrap(),

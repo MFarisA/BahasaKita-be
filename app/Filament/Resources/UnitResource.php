@@ -36,10 +36,10 @@ class UnitResource extends Resource
                 TextInput::make('title')
                 ->required()
                 ->maxLength(50)
-                ->label('Unit Title'),
+                ->label('Judul Unit'),
 
                 TextInput::make('order')
-                ->label('order')
+                ->label('Urutan Unit')
                 ->numeric()
                 ->required()
             ]);
@@ -50,17 +50,17 @@ class UnitResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('course.title')
-                    ->label('Course Title')
+                    ->label('Judul Course')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Unit Title')
+                    ->label('Judul Unit')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('order')
-                    ->label('Order')
+                    ->label('Urutan Unit')
                     ->sortable(),
             ])
             ->filters([

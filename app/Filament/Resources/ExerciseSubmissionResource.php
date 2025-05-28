@@ -29,12 +29,13 @@ class ExerciseSubmissionResource extends Resource
         return $form
             ->schema([
                 Select::make('user_id')
-                    ->label('User')
+                    ->label('Id user')
                     ->relationship('user', 'name')
+                    ->searchable()
                     ->required(),
 
                 Select::make('exercise_id')
-                    ->label('Latihan')
+                    ->label('Id soal')
                     ->relationship('exercise', 'id')
                     ->required(),
 

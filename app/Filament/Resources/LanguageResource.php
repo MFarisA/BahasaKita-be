@@ -39,7 +39,7 @@ class LanguageResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Bahasa Lokal')
+                    ->label('Nama bahasa lokal')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

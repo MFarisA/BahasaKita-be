@@ -43,7 +43,7 @@ class LessonResource extends Resource
                     ->maxLength(5000),
 
                 TextInput::make('order')
-                    ->label('Urutan')
+                    ->label('Urutan Pelajaran')
                     ->numeric()
                     ->default(0),
             ]);
@@ -70,7 +70,7 @@ class LessonResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('order')
-                    ->label('Urutan')
+                    ->label('Urutan Pelajaran')
                     ->sortable()
                     ->searchable(),
             ])

@@ -29,7 +29,7 @@ class CourseResource extends Resource
             ->schema([
                 TextInput::make('title')
                     ->required()
-                    ->label('Judul kursus')
+                    ->label('Judul Pelajaran')
                     ->maxLength(50),
                 Select::make('language_id')
                     ->label('Language')
@@ -43,11 +43,11 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Course Title')
+                    ->label('Judul pelajaran')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('language.name')
-                    ->label('Language')
+                    ->label('Nama bahasa lokal')
                     ->searchable()
                     ->sortable(),
             ])
