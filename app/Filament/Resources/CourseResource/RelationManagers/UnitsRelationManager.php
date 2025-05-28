@@ -20,11 +20,11 @@ class UnitsRelationManager extends RelationManager
         return $form
             ->schema([
                 TextInput::make('title')
-                    ->label('Judul level')
+                    ->label('Judul Unit')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('order')
-                    ->label('Urutan')
+                    ->label('Urutan Unit')
                     ->numeric()
                     ->required(),
             ]);
@@ -41,7 +41,7 @@ class UnitsRelationManager extends RelationManager
                     ->sortable(),
 
                 TextColumn::make('order')
-                    ->label('Urutan')
+                    ->label('Urutan Unit')
                     ->sortable(),
             ])
             ->filters([

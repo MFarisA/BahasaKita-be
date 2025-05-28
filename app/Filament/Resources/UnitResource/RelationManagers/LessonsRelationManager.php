@@ -24,13 +24,14 @@ class LessonsRelationManager extends RelationManager
             ->schema([
                 TextInput::make('title')
                     ->required()
+                    ->label('Judul Pelajaran')
                     ->maxLength(50),
                 TextInput::make('content')
                     ->required()
-                    ->maxLength(500)
-                    ->label('Konten materi'),
+                    ->label('Konten Pelajaran')
+                    ->maxLength(500),
                 TextInput::make('order')
-                    ->label('Urutan materi')
+                    ->label('Urutan Pelajaran')
                     ->numeric()
                     ->required()
             ]);
@@ -42,17 +43,17 @@ class LessonsRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('title')
-                    ->label('Judul materi')
+                    ->label('Judul pelajaran')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('content')
-                    ->label('Konten materi')
+                    ->label('Konten pelajaran')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('order')
                     ->searchable()
                     ->sortable()
-                    ->label('Urutan materi')
+                    ->label('Urutan pelajaran'),
             ])
             ->filters([
                 //

@@ -23,7 +23,7 @@ class CoursesRelationManager extends RelationManager
             ->schema([
                 TextInput::make('title')
                     ->required()
-                    ->label('Judul kursus')
+                    ->label('Judul Course')
                     ->maxLength(50),
                 
             ]);
@@ -35,7 +35,7 @@ class CoursesRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Judul Kursus')
+                    ->label('Judul Course')
                     ->searchable()
                     ->sortable(),
             ])

@@ -26,6 +26,7 @@ class ExercisesRelationManager extends RelationManager
             ->schema([
                 TextInput::make('type')
                     ->required()
+                    ->label('Jenis Soal')
                     ->maxLength(255),
 
                 FileUpload::make('gambar')
@@ -41,7 +42,7 @@ class ExercisesRelationManager extends RelationManager
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
 
                 KeyValue::make('content')
-                    ->label('Konten Soal')
+                    ->label('Isi Soal')
                     ->keyLabel('Kunci')
                     ->valueLabel('Isi')
                     ->required(),
@@ -60,7 +61,7 @@ class ExercisesRelationManager extends RelationManager
             ->recordTitleAttribute('type')
             ->columns([
                 TextColumn::make('type')
-                    ->label('Tipe')
+                    ->label('Jenis Soal')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'multiple_choice' => 'success',
@@ -68,17 +69,17 @@ class ExercisesRelationManager extends RelationManager
                     }),
 
                 ImageColumn::make('gambar')
-                    ->label('Gambar')
+                    ->label('Gambar Soal')
                     ->size(50),
 
                 TextColumn::make('content')
-                    ->label('Konten')
+                    ->label('Isi Soal')
                     ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
                     ->tooltip(fn($state) => json_encode($state))
                     ->wrap(),
 
                 TextColumn::make('answer')
-                    ->label('Jawaban')
+                    ->label('Jawaban Benar	')
                     ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
                     ->tooltip(fn($state) => json_encode($state))
                     ->wrap(),
