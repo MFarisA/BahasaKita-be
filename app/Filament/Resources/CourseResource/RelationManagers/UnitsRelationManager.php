@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\CourseResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -49,9 +48,15 @@ class UnitsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                
+
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('manageLessons')
+                    ->label('Kelola Materi')
+                    ->url(fn($record) => $record ? route('filament.admin.resources.units.edit', ['record' => $record->id]) : '#')
+                    ->icon('heroicon-o-book-open'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

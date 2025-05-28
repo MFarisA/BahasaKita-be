@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitResource\Pages;
 use App\Filament\Resources\UnitResource\RelationManagers;
+use App\Filament\Resources\UnitResource\RelationManagers\LessonsRelationManager;
 use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -78,7 +79,7 @@ class UnitResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            LessonsRelationManager::class,
         ];
     }
 

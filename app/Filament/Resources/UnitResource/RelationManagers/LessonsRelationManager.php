@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\UnitResource\RelationManagers;
 
+use Dom\Text;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -18,9 +21,17 @@ class LessonsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                TextInput::make('title')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(50),
+                TextInput::make('content')
+                    ->required()
+                    ->maxLength(500)
+                    ->label('Konten materi'),
+                TextInput::make('order')
+                    ->label('Urutan materi')
+                    ->numeric()
+                    ->required()
             ]);
     }
 
@@ -29,7 +40,18 @@ class LessonsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                TextColumn::make('title')
+                    ->label('Judul materi')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('content')
+                    ->label('Konten materi')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('order')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Urutan materi')
             ])
             ->filters([
                 //

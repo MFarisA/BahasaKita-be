@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LanguageResource\RelationManagers;
 // use Filament\Actions\Action; // Remove this import
 use Filament\Tables\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -20,10 +21,11 @@ class CoursesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                TextInput::make('title')
                     ->required()
                     ->label('Judul kursus')
                     ->maxLength(50),
+                
             ]);
     }
 
@@ -46,7 +48,7 @@ class CoursesRelationManager extends RelationManager
             ->actions([
                 Action::make('manageUnits')
                     ->label('Kelola Unit')
-                    ->url(fn($record) => route('filament.admin.resources.courses.edit', $record)) // arahkan ke halaman edit course
+                    ->url(fn($record) => route('filament.admin.resources.courses.edit', $record)) 
                     ->icon('heroicon-o-rectangle-stack'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
