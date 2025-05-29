@@ -8,8 +8,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UnitsRelationManager extends RelationManager
 {
@@ -48,15 +46,13 @@ class UnitsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                
-
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('manageLessons')
-                    ->label('Kelola Materi')
-                    ->url(fn($record) => $record ? route('filament.admin.resources.units.edit', ['record' => $record->id]) : '#')
-                    ->icon('heroicon-o-book-open'),
+                Tables\Actions\Action::make('manageExercises')
+                    ->label('Kelola Soal')
+                    ->url(fn($record) => route('filament.admin.resources.units.edit', $record))
+                    ->icon('heroicon-o-rectangle-stack'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

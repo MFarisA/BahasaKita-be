@@ -32,10 +32,10 @@ class ExerciseResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('lesson_id')
-                    ->label('lesson')
-                    ->relationship('lesson', 'title')
-                    ->required(),
+                // Select::make('lesson_id')
+                //     ->label('lesson')
+                //     ->relationship('lesson', 'title')
+                //     ->required(),
 
                 Select::make('type')
                     ->options([

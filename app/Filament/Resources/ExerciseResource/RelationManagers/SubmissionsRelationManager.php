@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ExerciseResource\RelationManagers;
 
+use App\Models\Exercise;
+use App\Models\ExerciseSubmission;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -17,6 +19,7 @@ class SubmissionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'submissions';
     protected static ?string $recordTitleAttribute = 'user.name';
+    protected static ?string $modelLabel = 'Exercise Submission';
 
     public function form(Form $form): Form
     {
@@ -46,6 +49,11 @@ class SubmissionsRelationManager extends RelationManager
                 TextColumn::make('user.name')
                     ->label('Nama Pengguna')
                     ->searchable(),
+                    
+                TextColumn::make('submitted_answer')
+                    ->label('Jawaban')
+                    ->formatStateUsing(fn($state) => is_array($state) ? json_encode($state) : $state)
+                    ->limit(50),
 
                 IconColumn::make('is_correct')
                     ->boolean()

@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exercise extends Model
 {
-    protected $fillable = ['lesson_id', 'type', 'gambar', 'content', 'answer'];
+    protected $fillable = ['unit_id', 'type', 'gambar', 'content', 'answer'];
 
     protected $casts = [
         'content' => 'array',
         'answer' => 'array',
     ];
 
-    public function lesson()
+    public function unit()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(Unit::class);
     }
 
     public function submissions()

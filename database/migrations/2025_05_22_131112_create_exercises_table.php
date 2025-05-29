@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
+            $table->foreignId('unit_id')->constrained()->onDelete('cascade'); // ✅ Ganti dari lesson_id
             $table->enum('type', ['multiple_choice'])->default('multiple_choice');
             $table->string('gambar')->nullable();
             $table->json('content');
