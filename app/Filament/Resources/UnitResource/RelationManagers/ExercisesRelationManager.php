@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\LessonResource\RelationManagers;
+namespace App\Filament\Resources\UnitResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -24,13 +24,15 @@ class ExercisesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('type')
+                Select::make('type')
+                    ->options([
+                        'multiple_choice' => 'Multiple Choice',
+                    ])
                     ->required()
-                    ->label('Jenis Soal')
-                    ->maxLength(255),
+                    ->label('Jenis Soal'),
 
                 FileUpload::make('gambar')
-                    ->label('Soal gambar')
+                    ->label('Gambar Soal')
                     ->image()
                     ->dehydrated()
                     ->imageEditor()
@@ -58,10 +60,10 @@ class ExercisesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('type')
+            ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('type')
-                    ->label('Jenis Soal')
+                    ->label('Tipe soal')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'multiple_choice' => 'success',
@@ -69,7 +71,7 @@ class ExercisesRelationManager extends RelationManager
                     }),
 
                 ImageColumn::make('gambar')
-                    ->label('Gambar Soal')
+                    ->label('Gambar')
                     ->size(50),
 
                 TextColumn::make('content')
@@ -79,25 +81,23 @@ class ExercisesRelationManager extends RelationManager
                     ->wrap(),
 
                 TextColumn::make('answer')
-                    ->label('Jawaban Benar	')
+                    ->label('Jawaban benar')
                     ->formatStateUsing(fn($state) => Str::limit(json_encode($state), 50))
                     ->tooltip(fn($state) => json_encode($state))
                     ->wrap(),
-
-
             ])
             ->filters([
                 //
             ])
             ->headerActions([
+
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\Action::make('kelolaSubmissions')
                     ->label('Submissions')
-                    ->url(fn($record) => route('filament.admin.resources.exercises.edit', ['record' => $record->id]))
+                    ->url(fn($record) => route('filament.admin.resources.exercises.edit', ['record' => $record]))
                     ->icon('heroicon-o-document-text'),
-
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

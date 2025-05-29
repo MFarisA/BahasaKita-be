@@ -13,8 +13,8 @@ class Unit extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function lessons()
+    public function exercises()
     {
-        return $this->hasMany(Lesson::class);
+        return $this->hasMany(Exercise::class);
     }
 }

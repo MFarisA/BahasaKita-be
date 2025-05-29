@@ -10,7 +10,7 @@ return new class extends Migration
         Schema::create('lesson_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
             $table->integer('duration')->default(0); // in seconds
             $table->timestamp('logged_at')->useCurrent();
             $table->timestamps();
