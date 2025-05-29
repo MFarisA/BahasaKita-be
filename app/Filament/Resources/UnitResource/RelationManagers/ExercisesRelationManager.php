@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -43,6 +44,12 @@ class ExercisesRelationManager extends RelationManager
                     ->visibility('public')
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
 
+                TextInput::make('xp')
+                    ->label('poin')
+                    ->numeric()
+                    ->required()
+                    ->default(10),
+
                 KeyValue::make('content')
                     ->label('Isi Soal')
                     ->keyLabel('Kunci')
@@ -73,6 +80,11 @@ class ExercisesRelationManager extends RelationManager
                 ImageColumn::make('gambar')
                     ->label('Gambar')
                     ->size(50),
+
+                TextColumn::make('xp')
+                    ->label('Poin')
+                    ->sortable()
+                    ->numeric(),
 
                 TextColumn::make('content')
                     ->label('Isi Soal')

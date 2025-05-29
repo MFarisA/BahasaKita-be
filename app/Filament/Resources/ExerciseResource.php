@@ -56,12 +56,18 @@ class ExerciseResource extends Resource
                     ->visibility('public')
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
 
+                TextInput::make('xp')
+                    ->label('poin')
+                    ->numeric()
+                    ->required()
+                    ->default(10),
+
                 KeyValue::make('content')
                     ->label('Isi Soal')
                     ->keyLabel('Kunci')
                     ->valueLabel('Isi')
                     ->required(),
-                    
+
                 KeyValue::make('answer')
                     ->label('Jawaban Benar')
                     ->keyLabel('Kunci Jawaban')
@@ -74,11 +80,6 @@ class ExerciseResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('lesson.title')
-                    ->label('Judul Pelajaran')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('type')
                     ->label('Tipe soal')
                     ->badge()
@@ -90,6 +91,11 @@ class ExerciseResource extends Resource
                 ImageColumn::make('gambar')
                     ->label('Gambar')
                     ->size(50),
+
+                TextColumn::make('xp')
+                    ->label('Poin')
+                    ->sortable()
+                    ->numeric(),
 
                 TextColumn::make('content')
                     ->label('Isi Soal')
