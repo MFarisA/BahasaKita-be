@@ -8,6 +8,7 @@ use App\Models\LeaderBoard;
 use App\Models\LessonProgress;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -40,13 +41,13 @@ class LeaderBoardResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('user.name')
-                    ->label('Nama user')
-                    ->required()
-                    ->disabled(),
-                TextInput::make('lesson.title'),
-                TextInput::make('Skor')
-                    ->label('Score')
+                Select::make('user_id')
+                    ->label('Id user')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->required(),
+                TextInput::make('score')
+                    ->label('Skor')
                     ->numeric()
                     ->required(),
                 textInput::make('is_completed')
@@ -66,10 +67,6 @@ class LeaderBoardResource extends Resource
             ->columns([
                 TextColumn::make('user.name')
                     ->label('User Name')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('lesson.title')
-                    ->label('Lesson Title')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('score')
