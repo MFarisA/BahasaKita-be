@@ -13,8 +13,8 @@ use App\Models\Unit;
 
 class ExerciseController extends Controller
 {
-   public function index()
-   {
-    return response()->json(Exercise::all(), 200);
-   }
+   // public function index()
+   // {
+   //  return response()->json(Exercise::all(), 200);
+   // }
 }

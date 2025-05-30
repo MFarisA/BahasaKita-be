@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExerciseSubmissionController;
 use App\Http\Controllers\Api\GetDataController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\LeaderBoardGameController;
@@ -33,6 +34,8 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::get('/subunits/{languageId}/{courseId}/{unitId}', [GetDataController::class, 'getSubUnit']);
     Route::get('/units/{languageId}/{courseId}', [GetDataController::class, 'getUnit']);
     Route::get('/courses/{languageId}', [GetDataController::class, 'getCourse']);
+
+    Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
 
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);

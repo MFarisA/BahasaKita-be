@@ -10,15 +10,18 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
     public function getProfile(Request $request)
-    {
-        $user = $request->user()->load('profile');
+{
+    $user = $request->user()->load('profile');
+    
+    // $xp = $user->profile ? $user->profile->xp : 0;
+    // $level = max(1, intval(floor($xp / 30))); // 30 XP = 1 level
 
-        return response()->json([
-            'user'    => $user,
-            'profile' => $user->profile,
-        ]);
-    }
-
+    return response()->json([
+        'user'    => $user,
+        // 'xp'      => $xp,
+        // 'level'   => $level,
+    ]);
+}
     public function updateProfile(Request $request)
     {
         $user = $request->user();

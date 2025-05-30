@@ -12,33 +12,45 @@ class ExerciseSubmissionController extends Controller
 {
     public function submit(Request $request, $exercise_id)
     {
-        $request->validate([
-            'submitted_answer' => 'required|array',
+        $data = $request->validate([
+            'submitted_answer' => 'required|array|min:1',
         ]);
 
         $exercise = Exercise::findOrFail($exercise_id);
+        $submittedKey = $data['submitted_answer'][0] ?? null;
 
-        // Contoh penilaian sederhana (hanya untuk tipe multiple_choice)
-        $isCorrect = null;
+        $isCorrect = false;
+
         if ($exercise->type === 'multiple_choice') {
-            $isCorrect = strtolower(trim($request->submitted_answer['answer'] ?? '')) === strtolower(trim($exercise->correct_answer ?? ''));
+            $content = $exercise->content; // example: ["a" => "cat", "b" => "dog", "question" => "..."]
+            $validKeys = array_keys($content);
+            $validKeys = array_filter($validKeys, fn($key) => $key !== 'question');
+
+            if (!in_array($submittedKey, $validKeys)) {
+                return response()->json([
+                    'message' => 'Submitted answer is not a valid option.',
+                ], 422);
+            }
+
+            // Compare submitted key with the correct answer key
+            $correctKey = array_key_first($exercise->answer); // assuming {"a": "cat"}
+            $isCorrect = $submittedKey === $correctKey;
         }
 
         $submission = ExerciseSubmission::create([
             'user_id' => Auth::id(),
             'exercise_id' => $exercise->id,
-            'submitted_answer' => $request->submitted_answer,
+            'submitted_answer' => $data['submitted_answer'],
             'is_correct' => $isCorrect,
         ]);
 
-        // Tambahkan XP ke profile jika benar
         if ($isCorrect) {
             $profile = Auth::user()->profile;
-            $profile->increment('xp', $exercise->xp ?? 0);
+            $profile->increment('xp', $exercise->xp ?? 15);
         }
 
         return response()->json([
-            'message' => 'Jawaban berhasil disimpan.',
+            'message' => $isCorrect ? 'Your answer is correct.' : 'Your answer is wrong.',
             'is_correct' => $isCorrect,
             'submission' => $submission,
         ], 201);

@@ -14,9 +14,9 @@ class Exercise extends Model
     ];
 
     public function subunit()
-{
-    return $this->belongsTo(SubUnit::class, 'sub_unit_id');
-}
+    {
+        return $this->belongsTo(SubUnit::class, 'sub_unit_id');
+    }
 
 
     public function submissions()

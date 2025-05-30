@@ -32,4 +32,9 @@ class Profile extends Model
         }
         return null;
     }
+
+    public function getLevelAttribute()
+    {
+        return max(1, intval(floor($this->xp / 30)));
+    }
 }
