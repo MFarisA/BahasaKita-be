@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('exercises', function (Blueprint $table) {
+        Schema::create('sub_units', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_unit_id')->constrained()->onDelete('cascade'); // ✅ Ganti dari lesson_id
-            $table->enum('type', ['multiple_choice'])->default('multiple_choice');
-            $table->string('gambar')->nullable();
-            $table->json('content');
-            $table->json('answer');
+            $table->foreignId('unit_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('exercises');
+        Schema::dropIfExists('sub_units');
     }
 };

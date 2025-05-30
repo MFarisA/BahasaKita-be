@@ -12,9 +12,9 @@ class Unit extends Model
     {
         return $this->belongsTo(Course::class);
     }
-
-    public function exercises()
+    
+    public function subunits()
     {
-        return $this->hasMany(Exercise::class);
+        return $this->hasMany(SubUnit::class);
     }
 }

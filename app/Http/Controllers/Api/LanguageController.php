@@ -11,16 +11,14 @@ use Illuminate\Http\Request;
 
 class LanguageController extends Controller
 {
-    // List all languages
     public function index()
     {
         return response()->json(Language::all(), 200);
     }
 
-    // Show language with nested relations: courses -> units -> lessons -> exercises
     public function show($id)
     {
-        $language = Language::with('courses.units.lessons.exercises')->findOrFail($id);
+        $language = Language::with('courses.units')->findOrFail($id);
         return response()->json($language, 200);
     }
 }

@@ -30,7 +30,6 @@ class LanguageResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->label('Bahasa Lokal'),
-                
             ]);
     }
 

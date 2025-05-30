@@ -13,9 +13,9 @@ class Exercise extends Model
         'answer' => 'array',
     ];
 
-    public function unit()
+    public function subunit()
     {
-        return $this->belongsTo(Unit::class);
+        return $this->belongsTo(SubUnit::class);
     }
 
     public function submissions()
