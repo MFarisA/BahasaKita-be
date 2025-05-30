@@ -23,15 +23,12 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        // Validate the input; "name" is for the User model only
         $data = $request->validate([
             'name' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024|min:10',
         ]);
 
-        // Process photo upload separately so that we don't include "name" for the profile
         if ($request->hasFile('photo')) {
-            // Check if a previous photo exists on the profile
             if ($user->profile && $user->profile->photo && Storage::disk('public')->exists($user->profile->photo)) {
                 Storage::disk('public')->delete($user->profile->photo);
             }
@@ -40,10 +37,8 @@ class UserController extends Controller
             $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('profile/image', $filename, 'public');
 
-            // Prepare photo data only
             $photoData = ['photo' => $path];
 
-            // Create or update the profile with photo column only.
             if (!$user->profile) {
                 $user->profile()->create($photoData);
             } else {
@@ -51,7 +46,6 @@ class UserController extends Controller
             }
         }
 
-        // Update the user's name if provided
         if (isset($data['name'])) {
             $user->update(['name' => $data['name']]);
         }
