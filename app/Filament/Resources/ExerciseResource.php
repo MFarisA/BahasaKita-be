@@ -32,10 +32,12 @@ class ExerciseResource extends Resource
     {
         return $form
             ->schema([
-                // Select::make('lesson_id')
-                //     ->label('lesson')
-                //     ->relationship('lesson', 'title')
-                //     ->required(),
+                Select::make('sub_unit_id')
+                    ->label('Unit')
+                    ->relationship('subunit', 'title')
+                    ->searchable()
+                    ->required()
+                    ->preload(),
 
                 Select::make('type')
                     ->options([
@@ -80,6 +82,11 @@ class ExerciseResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('subunit.title')
+                    ->label('Unit')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('type')
                     ->label('Tipe soal')
                     ->badge()

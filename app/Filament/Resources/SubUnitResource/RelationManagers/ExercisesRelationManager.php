@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\UnitResource\RelationManagers;
+namespace App\Filament\Resources\SubUnitResource\RelationManagers;
 
-use Filament\Forms;
+use App\Filament\Resources\ExerciseSubmissionResource;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -13,8 +13,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class ExercisesRelationManager extends RelationManager
@@ -67,7 +65,7 @@ class ExercisesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('type')
             ->columns([
                 TextColumn::make('type')
                     ->label('Tipe soal')
@@ -102,8 +100,8 @@ class ExercisesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-
                 Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make(),
             ])
             ->actions([
                 Tables\Actions\Action::make('kelolaSubmissions')
@@ -115,6 +113,7 @@ class ExercisesRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

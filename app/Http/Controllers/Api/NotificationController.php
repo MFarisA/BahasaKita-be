@@ -58,20 +58,20 @@ class NotificationController extends Controller
     }
 
     // Notify users when new lesson is added
-    public function notifyNewLesson(Lesson $lesson)
-    {
-        $users = User::all(); // Atau filter user yang ikut course terkait
+    // public function notifyNewLesson(Lesson $lesson)
+    // {
+    //     $users = User::all(); // Atau filter user yang ikut course terkait
 
-        foreach ($users as $user) {
-            Notification::create([
-                'user_id' => $user->id,
-                'title' => 'Pelajaran Baru Tersedia',
-                'message' => "Pelajaran baru \"{$lesson->title}\" telah ditambahkan!",
-            ]);
-        }
+    //     foreach ($users as $user) {
+    //         Notification::create([
+    //             'user_id' => $user->id,
+    //             'title' => 'Pelajaran Baru Tersedia',
+    //             'message' => "Pelajaran baru \"{$lesson->title}\" telah ditambahkan!",
+    //         ]);
+    //     }
 
-        return response()->json(['status' => 'new lesson notification sent']);
-    }
+    //     return response()->json(['status' => 'new lesson notification sent']);
+    // }
 
     // Notify when user achieves a progress milestone
     public function checkMilestones(User $user)

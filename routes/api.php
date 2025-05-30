@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ExerciseController;
-use App\Http\Controllers\Api\GeminiController as ApiGeminiController;
+use App\Http\Controllers\Api\GetDataController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\LeaderBoardGameController;
 use App\Http\Controllers\Api\NotificationController;
@@ -21,29 +20,23 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-Route::get('/', [LanguageController::class, 'index']);              // GET /languages
-Route::get('/{id}', [LanguageController::class, 'show']);           // GET /languages/{id}
+Route::get('/GetAllLanguage', [LanguageController::class, 'index']);              
+Route::get('/Language/{id}', [LanguageController::class, 'show']);           
 
-// Protected routes tanpa rate limiting throttle:api
+
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(function () {
-    // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'getProfile']);
     Route::put('/profile', [UserController::class, 'updateProfile']);
 
-    Route::get('/{id}/courses', [ExerciseController::class, 'courses']);           // GET /languages/{id}/courses
-    Route::get('/courses/{id}/units', [ExerciseController::class, 'courseUnits']); // GET /courses/{id}/units
-    Route::get('/units/{id}/lessons', [ExerciseController::class, 'unitLessons']); // GET /units/{id}/lessons
-    Route::get('/lessons/{id}/exercises', [ExerciseController::class, 'lessonExercises']); // GET /lessons/{id}/exercises
-
-    Route::post('/exercises/{id}/submit', [ExerciseController::class, 'submit']);
-    Route::get('/my-submissions', [ExerciseController::class, 'userSubmissions']);
-    Route::get('/my-submissions/{id}', [ExerciseController::class, 'show']);
+    Route::get('/exercises/{languageId}/{courseId}/{unitId}/{subUnitId}', [GetDataController::class, 'getExercises']);
+    Route::get('/subunits/{languageId}/{courseId}/{unitId}', [GetDataController::class, 'getSubUnit']);
+    Route::get('/units/{languageId}/{courseId}', [GetDataController::class, 'getUnit']);
+    Route::get('/courses/{languageId}', [GetDataController::class, 'getCourse']);
 
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
-    // Trigger-only endpoints (bisa dijadwalkan lewat scheduler)
     Route::post('/notifications/reminders', [NotificationController::class, 'sendStudyReminders']);
     Route::post('/notifications/new-lesson/{lesson}', [NotificationController::class, 'notifyNewLesson']);
     Route::post('/notifications/milestones', function () {
@@ -54,13 +47,4 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
 
     Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
     Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
-    Route::get('/leaderboard/me', [LeaderBoardGameController::class, 'myProgress']);
-
-    Route::prefix('gemini')->name('gemini.')->group(function () {
-        Route::post('/generate', [ApiGeminiController::class, 'generateText'])->name('generate');
-        Route::post('/chat', [ApiGeminiController::class, 'chat'])->name('chat');
-        Route::get('/models', [ApiGeminiController::class, 'models'])->name('models');
-        Route::get('/health', [ApiGeminiController::class, 'health'])->name('health');
-        // Route::post('/analyze-image', [ApiGeminiController::class, 'analyzeImage'])->name('analyze-image');
-    });
 });
