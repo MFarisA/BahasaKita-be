@@ -26,7 +26,7 @@ Route::get('/Language/{id}', [LanguageController::class, 'show']);
 
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/profile', [UserController::class, 'getProfile']);
+    Route::get('/getProfile', [UserController::class, 'getProfile']);
     Route::put('/profile', [UserController::class, 'updateProfile']);
 
     Route::get('/exercises/{languageId}/{courseId}/{unitId}/{subUnitId}', [GetDataController::class, 'getExercises']);

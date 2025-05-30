@@ -11,7 +11,12 @@ class UserController extends Controller
 {
     public function getProfile(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user()->load('profile');
+
+        return response()->json([
+            'user'    => $user,
+            'profile' => $user->profile,
+        ]);
     }
 
     public function updateProfile(Request $request)
@@ -24,22 +29,32 @@ class UserController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-                Storage::disk('public')->delete($user->photo);
+            if ($user->profile && $user->profile->photo && Storage::disk('public')->exists($user->profile->photo)) {
+                Storage::disk('public')->delete($user->profile->photo);
             }
 
             $file = $request->file('photo');
             $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('profile/image', $filename, 'public');
 
-            $data['photo'] = $path;
+            $photoData = ['photo' => $path];
+
+            if (!$user->profile) {
+                $user->profile()->create($photoData);
+            } else {
+                $user->profile()->update($photoData);
+            }
         }
 
-        $user->update($data);
+        if (isset($data['name'])) {
+            $user->update(['name' => $data['name']]);
+        }
+
+        $user->load('profile');
 
         return response()->json([
             'message' => 'Profile updated successfully',
-            'user' => $user
+            'user' => $user,
         ]);
     }
 }
