@@ -17,20 +17,4 @@ class ExerciseController extends Controller
    {
     return response()->json(Exercise::all(), 200);
    }
-
-   public function getExercisesByUnitAndCourse($courseId, $unitId)
-   {
-       $exercises = Exercise::where('unit_id', $unitId)
-           ->whereHas('unit', function($query) use ($courseId) {
-               $query->where('course_id', $courseId);
-           })
-           ->get();
-
-       return response()->json([
-           'status' => 'success',
-           'data' => $exercises
-       ], 200);
-   }
-
-   
 }
