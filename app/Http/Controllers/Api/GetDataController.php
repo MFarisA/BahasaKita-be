@@ -12,7 +12,8 @@ class GetDataController extends Controller
 {
     public function getExercises($languageId, $courseId, $unitId, $subUnitId)
     {
-        $exercises = Exercise::where('sub_unit_id', $subUnitId)
+        $exercises = Exercise::with('subunit.unit.course.language')
+            ->where('sub_unit_id', $subUnitId)
             ->whereHas('subunit', function ($query) use ($unitId, $courseId, $languageId) {
                 $query->where('unit_id', $unitId)
                     ->whereHas('unit', function ($q) use ($courseId, $languageId) {
@@ -28,7 +29,8 @@ class GetDataController extends Controller
 
     public function getSubUnit($languageId, $courseId, $unitId)
     {
-        $subUnits = SubUnit::where('unit_id', $unitId)
+        $subUnits = SubUnit::with('unit.course.language')
+            ->where('unit_id', $unitId)
             ->whereHas('unit', function ($query) use ($courseId, $languageId) {
                 $query->where('course_id', $courseId)
                     ->whereHas('course', function ($q2) use ($languageId) {
@@ -41,7 +43,8 @@ class GetDataController extends Controller
 
     public function getUnit($languageId, $courseId)
     {
-        $units = Unit::where('course_id', $courseId)
+        $units = Unit::with('course.language')
+            ->where('course_id', $courseId)
             ->whereHas('course', function ($query) use ($languageId) {
                 $query->where('language_id', $languageId);
             })->get();
@@ -51,7 +54,7 @@ class GetDataController extends Controller
 
     public function getCourse($languageId)
     {
-        $courses = Language::where('id', $languageId)->get();
-        return response()->json($courses, 200);
+        $language = Language::with('courses.language')->find($languageId);
+        return response()->json($language ? $language->courses : [], 200);
     }
 }
