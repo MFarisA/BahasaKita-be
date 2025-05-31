@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\LeaderBoardGameController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CulturalContentController;
 use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +37,8 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::get('/courses/{languageId}', [GetDataController::class, 'getCourse']);
 
     Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
-    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}/sub-units/{subUnitId}/exercises',[ExerciseSubmissionController::class, 'showExercises']);
-    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}',[ExerciseSubmissionController::class, 'showUnit']);
+    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}/sub-units/{subUnitId}/exercises', [ExerciseSubmissionController::class, 'showExercises']);
+    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}', [ExerciseSubmissionController::class, 'showUnit']);
 
 
     // Route::get('/notifications', [NotificationController::class, 'index']);
@@ -53,4 +54,11 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
 
     // Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
     // Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
+
+    // Cultural Content Routes
+    Route::prefix('cultural-content')->group(function () {
+        Route::get('/', [CulturalContentController::class, 'index']);
+        Route::get('/{type}', [CulturalContentController::class, 'getByType'])
+            ->where('type', 'story|proverb|trivia');
+    });
 });
