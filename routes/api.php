@@ -37,10 +37,7 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
 
     Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
     Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}/sub-units/{subUnitId}/exercises',[ExerciseSubmissionController::class, 'showExercises']);
-    Route::get(
-        '/languages/{languageId}/courses/{courseId}/units/{unitId}',
-        [ExerciseSubmissionController::class, 'showUnit']
-    );
+    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}',[ExerciseSubmissionController::class, 'showUnit']);
 
 
     // Route::get('/notifications', [NotificationController::class, 'index']);
@@ -54,6 +51,6 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     //     }
     // });
 
-    Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
-    Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
+    // Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
+    // Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
 });

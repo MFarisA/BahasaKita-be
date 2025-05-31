@@ -5,15 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LeaderBoardResource\Pages;
 use App\Filament\Resources\LeaderBoardResource\RelationManagers;
 use App\Models\LeaderBoard;
-use App\Models\LessonProgress;
+use App\Models\Profile;
 use Filament\Forms;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,70 +21,76 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeaderBoardResource extends Resource
 {
-    protected static ?string $model = LessonProgress::class;
+    protected static ?string $model = Profile::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-trophy';
     protected static ?string $title = 'Leader Board';
     protected static ?string $label = 'Leader Board';
     protected static ?string $pluralLabel = 'Leader Boards';
-
-    protected static ?string $navigationIcon = 'heroicon-o-trophy';
-    public static function getModelLabel(): string
-    {
-        return static::$label;
-    }
-
-    public static function getPluralModelLabel(): string
-    {
-        return static::$pluralLabel;
-    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('user_id')
-                    ->label('Id user')
+                    ->label('User')
                     ->relationship('user', 'name')
-                    ->searchable()
                     ->required(),
-                TextInput::make('score')
-                    ->label('Skor')
-                    ->numeric()
-                    ->required(),
-                textInput::make('is_completed')
-                    ->label('Selesai'),
-                DateTimePicker::make('created_at')
-                    ->label('Progress Date')
-                    ->disabled(),
-                DateTimePicker::make('updated_at')
-                    ->label('Last Updated')
-                    ->disabled(),
+
+                TextInput::make('xp')
+                    ->integer()
+                    ->label('Points')
+                    ->required()
+                    ->default(1),
+
+                TextInput::make('level')
+                    ->label('Level')
+                    ->integer()
+                    ->required()
+                    ->default(1),
+
+                FileUpload::make('photo')
+                    ->label('Photo')
+                    ->dehydrated()
+                    ->image()
+                    ->imageEditor()
+                    ->imageCropAspectRatio('1:1')
+                    ->maxSize(2048)
+                    ->disk('public')
+                    ->directory('profile-photos')
+                    ->visibility('public')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('xp', 'desc')
             ->columns([
+                TextColumn::make('rank')
+                    ->label('Rank')
+                    ->rowIndex()
+                    ->sortable(false),
+
                 TextColumn::make('user.name')
-                    ->label('User Name')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('score')
-                    ->label('Score')
+                    ->label('User')
                     ->sortable()
-                    ->numeric(),
-                BooleanColumn::make('is_completed')
-                    ->label('Completed')
-                    ->boolean()
+                    ->searchable(),
+
+                TextColumn::make('xp')
+                    ->label('Points')
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->label('Progress Date')
-                    ->dateTime()
+
+                TextColumn::make('level')
+                    ->label('Level')
                     ->sortable(),
-                TextColumn::make('updated_at')
-                    ->label('Last Updated')
-                    ->dateTime()
-                    ->sortable(),
+
+                ImageColumn::make('photo')
+                    ->label('Photo')
+                    ->circular()
+                    ->size(40)
+                    ->getStateUsing(fn($record) => $record->photo ? asset("storage/{$record->photo}") : null),
             ])
             ->filters([
                 //

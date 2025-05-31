@@ -64,26 +64,4 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->email === 'adminSuper@x.com';
     }
-
-    public function lessonProgress()
-    {
-        return $this->hasMany(LessonProgress::class);
-    }
-
-    public function completedLessonsCount()
-    {
-        return $this->lessonProgress()->where('is_completed', true)->count();
-    }
-
-    public function totalScore()
-    {
-        return $this->lessonProgress()->sum('score');
-    }
-
-    public function weeklyScore()
-    {
-        return $this->lessonProgress()
-            ->where('created_at', '>=', now()->subDays(7))
-            ->sum('score');
-    }
 }
