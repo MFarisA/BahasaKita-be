@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseSubmissionController;
 use App\Http\Controllers\Api\GetDataController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\LeaderBoardController;
 use App\Http\Controllers\Api\LeaderBoardGameController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
@@ -12,12 +13,11 @@ use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route untuk ambil data user login
+
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
