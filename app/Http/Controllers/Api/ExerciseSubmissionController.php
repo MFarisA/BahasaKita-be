@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Exercise;
 use App\Models\ExerciseSubmission;
 use App\Models\SubUnit;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,87 +96,40 @@ class ExerciseSubmissionController extends Controller
         return response()->json($exercises);
     }
 
+    public function showUnit($languageId, $courseId, $unitId, Request $request)
+    {
+        $userId = $request->user()->id;
 
-    // // Function 1: validate that the current exercise has been submitted.
-    // protected function ensureExerciseSubmitted($exercise_id)
-    // {
-    //     $submission = ExerciseSubmission::where('user_id', Auth::id())
-    //         ->where('exercise_id', $exercise_id)
-    //         ->first();
+        // Ambil Unit sekarang
+        $unit = Unit::where('id', $unitId)
+            ->where('course_id', $courseId)
+            ->firstOrFail();
 
-    //     return $submission !== null;
-    // }
+        // Cari Unit sebelumnya berdasarkan urutan
+        $previousUnit = Unit::where('course_id', $courseId)
+            ->where('order', '<', $unit->order)
+            ->orderByDesc('order')
+            ->first();
 
-    // // Function 2: validate that the user has completed previous units and subunits.
-    // protected function validatePreviousCompletion(Exercise $currentExercise)
-    // {
-    //     $submittedExerciseIds = ExerciseSubmission::where('user_id', Auth::id())
-    //         ->pluck('exercise_id')
-    //         ->toArray();
+        if ($previousUnit) {
+            foreach ($previousUnit->subunits as $subunit) {
+                foreach ($subunit->exercises as $exercise) {
+                    $submission = ExerciseSubmission::where('user_id', $userId)
+                        ->where('exercise_id', $exercise->id)
+                        ->where('is_correct', true)
+                        ->first();
 
-    //     // Check incomplete exercises for previous units.
-    //     $incompleteUnitExercises = Exercise::where('unit_id', '<', $currentExercise->unit_id)
-    //         ->whereNotIn('id', $submittedExerciseIds)
-    //         ->exists();
+                    if (!$submission) {
+                        return response()->json([
+                            'message' => 'Selesaikan chapter (unit) sebelumnya terlebih dahulu.'
+                        ], 403);
+                    }
+                }
+            }
+        }
 
-    //     if ($incompleteUnitExercises) {
-    //         return response()->json([
-    //             'message' => 'Please complete all exercises in the previous units first.',
-    //         ], 403);
-    //     }
-
-    //     // Check incomplete exercises for previous subunits within the same unit.
-    //     $incompleteSubunitExercises = Exercise::where('unit_id', $currentExercise->unit_id)
-    //         ->where('subunit_id', '<', $currentExercise->subunit_id)
-    //         ->whereNotIn('id', $submittedExerciseIds)
-    //         ->exists();
-
-    //     if ($incompleteSubunitExercises) {
-    //         return response()->json([
-    //             'message' => 'Please complete all exercises in the previous subunits first.',
-    //         ], 403);
-    //     }
-
-    //     return true;
-    // }
-
-    // // Combined endpoint that uses both functions.
-    // public function nextQuestion()
-    // {
-    //     // Retrieve the user's last submitted exercise.
-    //     $lastSubmission = ExerciseSubmission::where('user_id', Auth::id())
-    //         ->orderBy('exercise_id', 'desc')
-    //         ->first();
-
-    //     // If no submissions exist, instruct the user to start with the first exercise.
-    //     if (!$lastSubmission) {
-    //         return response()->json([
-    //             'message' => 'You have not started any exercise yet. Please begin with the first exercise.'
-    //         ], 403);
-    //     }
-
-    //     // Get the current exercise based on the last submission.
-    //     $currentExercise = Exercise::findOrFail($lastSubmission->exercise_id);
-
-    //     // Validate completion of previous units and subunits for the current exercise.
-    //     $completionCheck = $this->validatePreviousCompletion($currentExercise);
-    //     if ($completionCheck !== true) {
-    //         return $completionCheck;
-    //     }
-
-    //     // Get the next exercise. (This example uses ordering by id.)
-    //     $nextExercise = Exercise::where('id', '>', $currentExercise->id)
-    //         ->orderBy('id')
-    //         ->first();
-
-    //     if (!$nextExercise) {
-    //         return response()->json([
-    //             'message' => 'No more exercises available.'
-    //         ], 404);
-    //     }
-
-    //     return response()->json([
-    //         'exercise' => $nextExercise,
-    //     ], 200);
-    // }
+        return response()->json([
+            'unit' => $unit->load('subunits')
+        ]);
+    }
 }

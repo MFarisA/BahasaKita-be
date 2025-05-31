@@ -36,19 +36,23 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::get('/courses/{languageId}', [GetDataController::class, 'getCourse']);
 
     Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
-    Route::get('/languages/{language}/courses/{course}/units/{unit}/subunits/{subunit}/exercises', [ExerciseSubmissionController::class, 'showExercises']);
+    Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}/sub-units/{subUnitId}/exercises',[ExerciseSubmissionController::class, 'showExercises']);
+    Route::get(
+        '/languages/{languageId}/courses/{courseId}/units/{unitId}',
+        [ExerciseSubmissionController::class, 'showUnit']
+    );
 
 
-    Route::get('/notifications', [NotificationController::class, 'index']);
-    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    // Route::get('/notifications', [NotificationController::class, 'index']);
+    // Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
-    Route::post('/notifications/reminders', [NotificationController::class, 'sendStudyReminders']);
-    Route::post('/notifications/new-lesson/{lesson}', [NotificationController::class, 'notifyNewLesson']);
-    Route::post('/notifications/milestones', function () {
-        foreach (\App\Models\User::all() as $user) {
-            app(NotificationController::class)->checkMilestones($user);
-        }
-    });
+    // Route::post('/notifications/reminders', [NotificationController::class, 'sendStudyReminders']);
+    // Route::post('/notifications/new-lesson/{lesson}', [NotificationController::class, 'notifyNewLesson']);
+    // Route::post('/notifications/milestones', function () {
+    //     foreach (\App\Models\User::all() as $user) {
+    //         app(NotificationController::class)->checkMilestones($user);
+    //     }
+    // });
 
     Route::get('/leaderboard/global', [LeaderBoardGameController::class, 'globalLeaderboard']);
     Route::get('/leaderboard/weekly', [LeaderBoardGameController::class, 'weeklyLeaderboard']);
