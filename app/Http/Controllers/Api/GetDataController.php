@@ -24,6 +24,10 @@ class GetDataController extends Controller
                     });
             })->get();
 
+        if ($exercises->isEmpty()) {
+            return response()->json(['message' => 'No exercises found for given IDs'], 404);
+        }
+
         return response()->json($exercises, 200);
     }
 

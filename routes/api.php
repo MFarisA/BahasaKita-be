@@ -21,8 +21,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-Route::get('/GetAllLanguage', [LanguageController::class, 'index']);              
-Route::get('/Language/{id}', [LanguageController::class, 'show']);           
+Route::get('/GetAllLanguage', [LanguageController::class, 'index']);
+Route::get('/Language/{id}', [LanguageController::class, 'show']);
 
 
 Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(function () {
@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::get('/courses/{languageId}', [GetDataController::class, 'getCourse']);
 
     Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
+    Route::get('/languages/{language}/courses/{course}/units/{unit}/subunits/{subunit}/exercises', [ExerciseSubmissionController::class, 'showExercises']);
+
 
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
