@@ -19,24 +19,22 @@ class ExerciseSubmissionController extends Controller
         ]);
 
         $exercise = Exercise::findOrFail($exercise_id);
-        $submittedKey = $data['submitted_answer'][0] ?? null;
+        $submittedIndex = $data['submitted_answer'][0] ?? null;
 
         $isCorrect = false;
 
         if ($exercise->type === 'multiple_choice') {
-            $content = $exercise->content; // example: ["a" => "cat", "b" => "dog", "question" => "..."]
-            $validKeys = array_keys($content);
-            $validKeys = array_filter($validKeys, fn($key) => $key !== 'question');
+            $choices = $exercise->content['choices'] ?? [];
 
-            if (!in_array($submittedKey, $validKeys)) {
+            // Validasi apakah index yg disubmit valid
+            if (!is_numeric($submittedIndex) || !isset($choices[(int) $submittedIndex])) {
                 return response()->json([
                     'message' => 'Submitted answer is not a valid option.',
                 ], 422);
             }
 
-            // Compare submitted key with the correct answer key
-            $correctKey = array_key_first($exercise->answer); // assuming {"a": "cat"}
-            $isCorrect = $submittedKey === $correctKey;
+            $correctIndex = (int) ($exercise->answer['correct_index'] ?? -1);
+            $isCorrect = ((int) $submittedIndex === $correctIndex);
         }
 
         $submission = ExerciseSubmission::create([
@@ -57,6 +55,7 @@ class ExerciseSubmissionController extends Controller
             'submission' => $submission,
         ], 201);
     }
+
 
     public function showExercises($languageId, $courseId, $unitId, $subUnitId, Request $request)
     {
