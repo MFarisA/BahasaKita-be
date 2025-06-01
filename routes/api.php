@@ -16,8 +16,8 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->get('/us
     return $request->user();
 });
 
-// Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google/url', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 Route::get('/GetAllLanguage', [LanguageController::class, 'index']);
