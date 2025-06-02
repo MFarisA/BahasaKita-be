@@ -26,7 +26,6 @@ class ExerciseSubmissionController extends Controller
         if ($exercise->type === 'multiple_choice') {
             $choices = $exercise->content['choices'] ?? [];
 
-            // Validasi apakah index yg disubmit valid
             if (!is_numeric($submittedIndex) || !isset($choices[(int) $submittedIndex])) {
                 return response()->json([
                     'message' => 'Submitted answer is not a valid option.',
@@ -65,20 +64,18 @@ class ExerciseSubmissionController extends Controller
             ->where('unit_id', $unitId)
             ->firstOrFail();
 
-        // Ambil SubUnit sebelumnya berdasarkan order
         $previousSubUnit = SubUnit::where('unit_id', $unitId)
             ->where('order', '<', $subUnit->order)
             ->orderByDesc('order')
             ->first();
 
-        // Jika ada subunit sebelumnya, cek apakah sudah diselesaikan
         if ($previousSubUnit) {
             $previousExercises = $previousSubUnit->exercises;
 
             foreach ($previousExercises as $exercise) {
                 $submission = ExerciseSubmission::where('user_id', $userId)
                     ->where('exercise_id', $exercise->id)
-                    ->where('is_correct', true) // atau tergantung kriteria "selesai"
+                    ->where('is_correct', true) 
                     ->first();
 
                 if (!$submission) {
@@ -89,7 +86,6 @@ class ExerciseSubmissionController extends Controller
             }
         }
 
-        // Kalau sudah lolos, ambil exercise di subunit sekarang
         $exercises = $subUnit->exercises;
 
         return response()->json($exercises);
@@ -129,6 +125,38 @@ class ExerciseSubmissionController extends Controller
 
         return response()->json([
             'unit' => $unit->load('subunits')
+        ]);
+    }
+
+    public function checkAnswer(Request $request, $exercise_id)
+    {
+        $data = $request->validate([
+            'submitted_answer' => 'required|array|min:1',
+        ]);
+
+        $exercise = Exercise::findOrFail($exercise_id);
+        $submittedIndex = $data['submitted_answer'][0] ?? null;
+
+        if ($exercise->type !== 'multiple_choice') {
+            return response()->json([
+                'message' => 'Unsupported exercise type.',
+            ], 422);
+        }
+
+        $choices = $exercise->content['choices'] ?? [];
+        if (!is_numeric($submittedIndex) || !isset($choices[(int) $submittedIndex])) {
+            return response()->json([
+                'message' => 'Submitted answer is not a valid option.',
+            ], 422);
+        }
+
+        $correctIndex = (int) ($exercise->answer['correct_index'] ?? -1);
+        $isCorrect = ((int) $submittedIndex === $correctIndex);
+
+        return response()->json([
+            'is_correct' => $isCorrect,
+            'correct_index' => $correctIndex,
+            'message' => $isCorrect ? 'Jawaban Anda benar.' : 'Jawaban Anda salah.',
         ]);
     }
 }

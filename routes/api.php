@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->withoutMiddleware(['throttle:api'])->group(fu
     Route::get('/leaderboard/global', [LeaderBoardController::class, 'getLeaderboard']);
 
     Route::post('/exercise/submit/{exercise_id}', [ExerciseSubmissionController::class, 'submit']);
+    Route::post('exercise/check-answer/{exercise_id}', [ExerciseSubmissionController::class, 'checkAnswer']);
     Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}/sub-units/{subUnitId}/exercises', [ExerciseSubmissionController::class, 'showExercises']);
     Route::get('/languages/{languageId}/courses/{courseId}/units/{unitId}', [ExerciseSubmissionController::class, 'showUnit']);
 
