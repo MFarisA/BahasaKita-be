@@ -43,6 +43,8 @@ class GoogleController extends Controller
             }
             
             $token = $user->createToken('google-token')->plainTextToken;
+            $frontendUrl = config('app.frontend_url');
+            return redirect()->to("{$frontendUrl}?token={$token}");
             
             return response()->json([
                 'token' => $token,
