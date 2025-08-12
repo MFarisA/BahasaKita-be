@@ -1,0 +1,34 @@
+services:
+  app:
+    build: .
+    container_name: bahasakita-app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./storage:/var/www/html/storage
+    depends_on:
+      - db
+    networks:
+      - caddy_net_external
+
+  db:
+    image: mysql:8.0
+    container_name: bahasakita-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: a_very_strong_and_different_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - caddy_net_external
+
+networks:
+  caddy_net_external:
+    external: true
+    name: caddy_net
+
+volumes:
+  mysql-data:
