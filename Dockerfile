@@ -43,12 +43,10 @@ COPY . .
 # Set correct permissions for storage and bootstrap cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Optimize Laravel for production
-RUN composer dump-autoload --optimize && \
-    php artisan optimize:clear && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# --- PERUBAHAN PENTING ---
+# Hapus perintah 'php artisan' dari sini.
+# Kita hanya akan mengoptimalkan autoloader.
+RUN composer dump-autoload --optimize
 
 # ---- Final Production Stage ----
 FROM base AS production
