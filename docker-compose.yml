@@ -16,10 +16,12 @@ services:
     container_name: bahasakita-db
     restart: unless-stopped
     environment:
+      # --- PERUBAHAN PENTING ---
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: a_very_strong_and_different_password
+      # Kita perlu mengatur kata sandi root secara terpisah
+      MYSQL_ROOT_PASSWORD: a_very_strong_and_different_root_password
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
