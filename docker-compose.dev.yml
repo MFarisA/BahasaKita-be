@@ -6,7 +6,9 @@ services:
     container_name: bahasakita-app-dev
     restart: unless-stopped
     volumes:
+      # Sinkronkan semuanya KECUALI direktori vendor
       - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
     ports:
       - "5173:5173" # Port untuk Vite Hot Reloading
     networks:
@@ -33,3 +35,5 @@ networks:
 
 volumes:
   mysql-data-dev:
+  # Tambahkan named volume untuk vendor
+  vendor_data:
