@@ -12,7 +12,6 @@ class Profile extends Model
 
     protected $fillable = [
         'user_id',
-        'kata',
         'xp',
         'level',
         'photo'
