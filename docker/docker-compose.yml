@@ -3,10 +3,12 @@ version: '3.8'
 services:
   bahasakita-app:
     build:
-      context: .
+      context: ../
       dockerfile: docker/Dockerfile 
     container_name: bahasakita-app
     restart: unless-stopped
+    env_file:
+      - ../.env
     tty: true
     environment:
       SERVICE_NAME: bahasakita-app
@@ -23,7 +25,9 @@ services:
 
   bahasakita-db:
     image: mysql:8.0
-    container_name: bahasakita-db
+    con_file:
+      - ../.env
+    envtainer_name: bahasakita-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
