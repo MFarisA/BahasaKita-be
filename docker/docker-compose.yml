@@ -25,10 +25,10 @@ services:
 
   bahasakita-db:
     image: mysql:8.0
-    con_file:
-      - ../.env
-    envtainer_name: bahasakita-db
+    container_name: bahasakita-db
     restart: unless-stopped
+    env_file:
+      - ../.env
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
