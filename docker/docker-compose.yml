@@ -13,9 +13,9 @@ services:
     environment:
       SERVICE_NAME: bahasakita-app
     volumes:
-      - ./:/var/www/html
-      - ./docker/nginx.conf:/etc/nginx/http.d/default.conf
-      - ./docker/supervisord.conf:/etc/supervisord.conf
+      - ../:/var/www/html
+      - ./nginx.conf:/etc/nginx/http.d/default.conf
+      - ./supervisord.conf:/etc/supervisord.conf
     ports:
       - "8001:80"
     networks:
