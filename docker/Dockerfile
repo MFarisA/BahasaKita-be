@@ -1,7 +1,7 @@
-# ---- Base PHP Stage ----
+# ---- Base Stage (Runtime environment only) ----
 FROM php:8.3-fpm-alpine AS base
 
-# Install system dependencies needed for Laravel
+# Install system dependencies needed for Laravel at runtime
 RUN apk add --no-cache \
     curl \
     nginx \
@@ -13,35 +13,48 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     icu-dev \
-    nodejs \
-    npm  # <-- Tambahkan Node.js dan NPM
+    postgresql-dev
 
 # Install PHP extensions for Laravel
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
     gd \
     pdo_mysql \
+    pdo_pgsql \
     zip \
     bcmath \
     exif \
     intl
 
-# Install Composer (PHP package manager)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 # Set the working directory
 WORKDIR /var/www/html
 
-# ---- Build Stage ----
+# Configure custom PHP-FPM pool for saving RAM (pm = ondemand)
+RUN { \
+    echo '[www]'; \
+    echo 'pm = ondemand'; \
+    echo 'pm.max_children = 5'; \
+    echo 'pm.process_idle_timeout = 10s'; \
+    echo 'pm.max_requests = 500'; \
+    echo 'clear_env = no'; \
+} > /usr/local/etc/php-fpm.d/zz-custom-pm.conf
+
+# ---- Build Stage (Build dependencies & assets compilation) ----
 FROM base AS build
 
-# Copy composer files and install dependencies
+# Install build-only dependencies
+RUN apk add --no-cache nodejs npm
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy composer config and install dependencies
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist
 
-# Copy package.json files and install NPM dependencies
+# Copy NPM package configurations and install packages
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
@@ -49,22 +62,25 @@ COPY . .
 # Build production assets with Vite
 RUN npm run build
 
+# Remove development dependencies and clean up caches
+RUN rm -rf node_modules \
+    && composer dump-autoload --no-dev --classmap-authoritative \
+    && composer clear-cache \
+    && npm cache clean --force
+
+# ---- Final Production Stage (Minimalist runtime image) ----
+FROM base AS production
+
+# Copy application code and optimized vendors from build stage
+COPY --from=build /var/www/html /var/www/html
+
 # Set correct permissions for storage and bootstrap cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Optimize Laravel for production
-RUN composer dump-autoload --optimize
-
-# ---- Final Production Stage ----
-FROM base AS production
-
-# Copy the application with dependencies from the build stage
-COPY --from=build /var/www/html /var/www/html
-
-# Copy the Nginx configuration
+# Copy Nginx configurations
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
-# Copy the Supervisor configuration
+# Copy Supervisor configurations
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
